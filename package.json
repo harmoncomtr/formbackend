@@ -1,6 +1,6 @@
 {
   "name": "formbackend",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Simple backend for handling form data and file uploads",
   "main": "index.js",
   "author": "Harmon Developer",
