@@ -5,7 +5,7 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid'); 
 const path = require('path');
 
-function startServer(port = 3000, endpoint = '/data', webpanelPort = 8080) {
+function startServer(port = 3000, endpoint = '/data') {
   const app = express();
   app.use(bodyParser.urlencoded({ extended: false })); 
   app.use(express.static(path.join(__dirname, 'public'))); 
