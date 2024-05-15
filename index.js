@@ -24,8 +24,16 @@ function startServer(port = 3000, endpoint = '/data') {
     destination: (req, file, cb) => {
       const ipAddress = req.ip;
       const uuid = ipUUIDMap[ipAddress] || generateUUIDForIP(ipAddress); // Get or generate UUID
-      const responseCount = (req.body.responses || {})[uuid] ? (req.body.responses[uuid].length + 1) : 1;
-      const dataDir = `data/${uuid}/${responseCount}`;
+
+      // Increment the request count for this UUID
+      let requestCount = ipUUIDMap[uuid] || 0; // Check if count exists, otherwise start from 0
+      requestCount++;
+      ipUUIDMap[uuid] = requestCount;
+
+      // Save updated request count to ips.json
+      fs.writeFileSync('ips.json', JSON.stringify(ipUUIDMap, null, 2));
+
+      const dataDir = `data/${uuid}/${requestCount}`;
 
       console.log('Data Dir:', dataDir); // Log the data directory path
       // Create the directory if it doesn't exist
@@ -48,8 +56,8 @@ function startServer(port = 3000, endpoint = '/data') {
     const data = req.body;
     const ipAddress = req.ip;
     const uuid = ipUUIDMap[ipAddress];
-    const responseCount = (req.body.responses || {})[uuid] ? (req.body.responses[uuid].length + 1) : 1;
-    const responseDir = `data/${uuid}/${responseCount}`;
+    const requestCount = ipUUIDMap[uuid]; // Use the requestCount from ips.json
+    const responseDir = `data/${uuid}/${requestCount}`;
 
     // Handle data from form fields
     let output = '';
