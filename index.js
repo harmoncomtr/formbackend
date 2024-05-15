@@ -33,7 +33,7 @@ function startServer(port = 3000, endpoint = '/data') {
         fs.mkdirSync(dataDir, { recursive: true }); 
       }
 
-      cb(null, `${dataDir}/uploads`);
+      cb(null, dataDir); // Changed to the dataDir itself
     },
     filename: (req, file, cb) => {
       const filename = `${uuidv4()}.${file.originalname.split('.').pop()}`; 
