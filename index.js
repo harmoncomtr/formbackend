@@ -1,11 +1,14 @@
 const express = require('express');
 const fs = require('fs');
+const bodyParser = require('body-parser'); // Import body-parser
 
 function startServer(port = 3000, endpoint = '/data') {
   const app = express();
+  app.use(bodyParser.urlencoded({ extended: false })); // Use body-parser middleware
 
   app.post(endpoint, (req, res) => {
-    const data = req.body;
+    const data = req.body; // Data will now be parsed correctly
+
     let output = '';
 
     for (const key in data) {
