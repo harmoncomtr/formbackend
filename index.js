@@ -82,25 +82,11 @@ function startServer(port = 3000, endpoint = '/data') {
     // Save IP to ip.txt inside the IP's folder
     fs.writeFileSync(`${ipFolder}/ip.txt`, ipAddress);
 
-    // Read existing data from response.json (if it exists)
-    let responses = {};
-    const responseFilePath = `${responseDir}/response.json`;
-    try {
-      responses = JSON.parse(fs.readFileSync(responseFilePath));
-    } catch (err) {
-      if (err.code !== 'ENOENT') {
-        console.error('Error reading response.json:', err);
-      }
-    }
-
     // Add new data to the correct UUID group in responses
     if (!responses[uuid]) {
       responses[uuid] = [];
     }
     responses[uuid].push(data);
-
-    // Save the updated data to response.json in the correct folder
-    fs.writeFileSync(responseFilePath, JSON.stringify(responses, null, 2));
 
     res.send('Data and files received and saved!');
   });

@@ -64,7 +64,6 @@ The server organizes data as follows:
     - **`ip.txt`:** Stores the IP address associated with the UUID.
     - **`[Request Count]` folder:**
       - **`data.json`:** Contains the form data submitted.
-      - **`response.json`:** Tracks all responses for the UUID.
       - **Uploaded files:** Files uploaded with the form are saved within this folder.
 
 ## Contributing
