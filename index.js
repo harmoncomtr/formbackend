@@ -86,59 +86,6 @@ function startServer(port = 3000, endpoint = '/data', webpanelPort = 8080) {
     res.send('Data and files received and saved!');
   });
 
-  // Endpoint for getting data directory structure
-  app.get('/data-structure', (req, res) => {
-    const ipAddress = req.query.ip; 
-    const uuid = ipUUIDMap[ipAddress]; 
-
-    if (uuid) {
-      const dataDir = `data/${uuid}`; 
-
-      // Function to get directory structure recursively
-      function getDirectoryStructure(dir) {
-        return new Promise((resolve, reject) => {
-          fs.readdir(dir, (err, files) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(files.map(file => {
-                const filePath = path.join(dir, file);
-                return {
-                  name: file,
-                  type: fs.statSync(filePath).isDirectory() ? 'directory' : 'file',
-                  path: filePath
-                };
-              }));
-            }
-          });
-        });
-      }
-
-      getDirectoryStructure(dataDir)
-        .then(structure => {
-          res.json({ structure, uuid });
-        })
-        .catch(err => {
-          console.error('Error getting directory structure:', err);
-          res.status(500).send('Error getting directory structure');
-        });
-    } else {
-      res.status(400).send('Invalid IP address');
-    }
-  });
-
-  app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-  });
-
-  // Start the web panel server
-  const webPanelApp = express();
-  webPanelApp.use(express.static(path.join(__dirname, 'public')));
-
-  webPanelApp.listen(webpanelPort, () => {
-    console.log(`Web panel server listening on port ${webpanelPort}`);
-  });
-
   function generateUUIDForIP(ipAddress) {
     const uuid = uuidv4();
     ipUUIDMap[ipAddress] = uuid;
