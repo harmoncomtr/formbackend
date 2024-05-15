@@ -1,36 +1,41 @@
 const express = require('express');
 const fs = require('fs');
-const bodyParser = require('body-parser'); // Import body-parser
+const bodyParser = require('body-parser');
 
 function startServer(port = 3000, endpoint = '/data') {
   const app = express();
-  app.use(bodyParser.urlencoded({ extended: false })); // Use body-parser middleware
+  app.use(bodyParser.urlencoded({ extended: false })); 
 
   app.post(endpoint, (req, res) => {
-    const data = req.body; // Data will now be parsed correctly
+    const data = req.body;
+    const ipAddress = req.ip; // Get the client's IP address
 
     let output = '';
-
     for (const key in data) {
       output += `${key}: ${data[key]}, `;
     }
+    output = output.slice(0, -2); // Remove trailing comma and space
 
-    // Remove trailing comma and space
-    output = output.slice(0, -2);
+    console.log(`IP: ${ipAddress}, Data: ${output}`);
 
-    console.log(output);
-
-    // Save to response.json
+    // Read existing data from response.json
+    let responses = {};
     try {
-      fs.writeFileSync('response.json', JSON.stringify(data, null, 2));
+      responses = JSON.parse(fs.readFileSync('response.json'));
     } catch (err) {
-      if (err.code === 'ENOENT') {
-        // File doesn't exist, create it
-        fs.writeFileSync('response.json', JSON.stringify(data, null, 2));
-      } else {
-        console.error('Error saving data to response.json:', err);
+      if (err.code !== 'ENOENT') {
+        console.error('Error reading response.json:', err);
       }
     }
+
+    // Add new data to the correct IP group
+    if (!responses[ipAddress]) {
+      responses[ipAddress] = [];
+    }
+    responses[ipAddress].push(data);
+
+    // Save the updated data to response.json
+    fs.writeFileSync('response.json', JSON.stringify(responses, null, 2));
 
     res.send('Data received and saved!');
   });
