@@ -58,6 +58,7 @@ function startServer(port = 3000, endpoint = '/data') {
     const uuid = ipUUIDMap[ipAddress];
     const requestCount = ipUUIDMap[uuid]; // Use the requestCount from ips.json
     const responseDir = `data/${uuid}/${requestCount}`;
+    const ipFolder = `data/${uuid}`; // Path to the IP's folder
 
     // Handle data from form fields
     let output = '';
@@ -78,8 +79,8 @@ function startServer(port = 3000, endpoint = '/data') {
     // Save form data to data.json
     fs.writeFileSync(`${responseDir}/data.json`, JSON.stringify(data, null, 2));
 
-    // Save IP to ip.txt inside the response directory
-    fs.writeFileSync(`${responseDir}/ip.txt`, ipAddress);
+    // Save IP to ip.txt inside the IP's folder
+    fs.writeFileSync(`${ipFolder}/ip.txt`, ipAddress);
 
     // Read existing data from response.json (if it exists)
     let responses = {};
