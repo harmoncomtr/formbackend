@@ -1,6 +1,6 @@
 {
   "name": "formbackend",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Simple backend for handling form data and file uploads with a web panel.",
   "main": "index.js",
   "author": "Harmon Developer",
@@ -10,7 +10,7 @@
     "body-parser": "^1.20.2",
     "multer": "^1.4.5-lts.1",
     "uuid": "^9.0.0",
-    "path": "^0.12.7" 
+    "path": "^0.12.7"
   },
   "scripts": {
     "start": "node index.js"
