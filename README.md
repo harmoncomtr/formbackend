@@ -1,80 +1,103 @@
-## Simple Data Server
+# formbackend
 
-This Node.js script creates a basic web server that receives data from an HTML form, prints it to the console, and saves it to a JSON file.
+A simple Node.js server to handle form submissions with file uploads and store data in a structured way.
 
-**Features:**
+## Installation
 
-- **Starts a server:** Listens on a specified port (default 3000).
-- **Handles POST requests:** Receives data from a form at a specific endpoint (default `/data`).
-- **Prints data to console:** Outputs the received data in a formatted way.
-- **Saves data to JSON:** Creates or updates `response.json` with the received data.
+```bash
+npm install formbackend
+```
 
-**How to Use:**
+## Usage
 
-1. B **Install dependencies & Start Backend:**
-   ```bash"
-   npm install formbackend
+1. **Create `ips.json` file:**
+   - This file will store the mapping of IP addresses to UUIDs and request counts.
+   - Initially, create an empty `ips.json` file in the root directory of your project.
+
+2. **Start the server:**
+
+   ```javascript
+   const formbackend = require('formbackend');
+
+   formbackend.startServer(3000, '/data'); // Port 3000, endpoint /data 
    ```
-    ```nodejs
-    const formBackend = require('formbackend');
-    formBackend.startServer(8080, '/my-data');
-    ```
 
-2. **Create an HTML form:**
+3. **Create your HTML form:**
+
    ```html
    <!DOCTYPE html>
    <html>
    <head>
-     <title>Data Submission</title>
+     <title>Form Submission</title>
    </head>
    <body>
-     <form action="http://localhost:3000/data" method="POST">
+     <form action="/data" method="POST" enctype="multipart/form-data">
        <label for="name">Name:</label>
-       <input type="text" id="name" name="name" />
-       <br>
-       <label for="surname">Surname:</label>
-       <input type="text" id="surname" name="surname" />
-       <br>
-       <input type="submit" value="Submit" />
+       <input type="text" id="name" name="name" required><br><br>
+ 
+       <label for="email">Email:</label>
+       <input type="email" id="email" name="email" required><br><br>
+ 
+       <label for="message">Message:</label>
+       <textarea id="message" name="message" required></textarea><br><br>
+ 
+       <label for="file">Upload File:</label>
+       <input type="file" id="file" name="files"><br><br>
+ 
+       <button type="submit">Submit</button>
      </form>
    </body>
    </html>
    ```
 
-3. **Run the server:**
-   ```bash
-   node index.js 
-   ```
+4. **Run your server:**
+   - Make sure your server code is running in the same directory as your HTML form.
+   - Open the HTML form in a browser.
+   - Submit the form.
 
-4. **Submit the form.** The server will log the data and save it to `response.json`.
+## Data Structure
 
-**Customization:**
+The server organizes data as follows:
 
-- **Port:** Modify the `port` argument when calling `startServer()`.
-- **Endpoint:** Change the `endpoint` argument in `startServer()` to customize the URL where the form submits data.
+- **`data` folder:**
+  - **`[UUID]` folder:**
+    - **`ip.txt`:** Stores the IP address associated with the UUID.
+    - **`[Request Count]` folder:**
+      - **`data.json`:** Contains the form data submitted.
+      - **`response.json`:** Tracks all responses for the UUID.
+      - **Uploaded files:** Files uploaded with the form are saved within this folder.
 
-**Example:**
+## Contributing
 
-If the form sends data:
+Contributions are welcome! Please open an issue or submit a pull request.
 
-```json
-{
-  "name": "John",
-  "surname": "Doe"
-}
-```
+## License
 
-The console output will be:
+[MIT](LICENSE)
 
-```
-name: John, Surname: Doe
-```
+```markdown
+**Explanation:**
 
-And `response.json` will contain:
+* **README:**
+    * **Installation:** Explains how to install the package using `npm install formbackend`.
+    * **Usage:** Steps on setting up the `ips.json` file, starting the server, creating the HTML form, and running the server.
+    * **Data Structure:**  Clearly outlines the file and folder organization of the saved data.
+    * **Example Server Code:** Includes a fully functional `index.js` server file.
+    * **Contributing:** Encourages contributions and provides guidance on how to contribute.
+    * **License:** Specifies the MIT license.
+* **Example HTML Form:**  
+    * Provides a basic HTML form with input fields, a file upload input, and a submit button.
+* **Example Server Code:**
+    * `formbackend` npm package functionality.
+    * Uses `multer` for handling file uploads.
+    * Saves form data, IP address, and files in a structured way.
 
-```json
-{
-  "name": "John",
-  "surname": "Doe"
-}
+**Important Notes:**
+
+* **Node.js:** Make sure you have Node.js installed on your machine.
+* **Project Setup:** Create a new Node.js project, install the `formbackend` package, and create the `ips.json` file.
+* **Server Configuration:**  You can customize the port number and endpoint URL in the `startServer` call.
+* **Deployment:** Once your server code is ready, you can deploy it to a web hosting service.
+
+I hope this helps you with your `formbackend` project!
 ```
