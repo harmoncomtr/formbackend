@@ -27,6 +27,7 @@ function startServer(port = 3000, endpoint = '/data') {
       const responseCount = (req.body.responses || {})[uuid] ? (req.body.responses[uuid].length + 1) : 1;
       const dataDir = `data/${uuid}/${responseCount}`;
 
+      console.log('Data Dir:', dataDir); // Log the data directory path
       // Create the directory if it doesn't exist
       if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true }); 
@@ -36,6 +37,7 @@ function startServer(port = 3000, endpoint = '/data') {
     },
     filename: (req, file, cb) => {
       const filename = `${uuidv4()}.${file.originalname.split('.').pop()}`; 
+      console.log('Filename:', filename); // Log the generated filename
       cb(null, filename); 
     }
   });
