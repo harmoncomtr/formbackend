@@ -1,17 +1,40 @@
 const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
-const multer = require('multer'); // Add multer for file uploads
+const multer = require('multer');
+const { v4: uuidv4 } = require('uuid'); // Import uuid for random file names
 
 function startServer(port = 3000, endpoint = '/data') {
   const app = express();
   app.use(bodyParser.urlencoded({ extended: false })); 
 
-  const upload = multer({ dest: 'data' }); // Configure multer to store files in 'data'
+  // Create multer storage with custom file naming logic
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      const ipAddress = req.ip;
+      const responseCount = (req.body.responses || {})[ipAddress] ? (req.body.responses[ipAddress].length + 1) : 1;
+      const dataDir = `data/${ipAddress}/${responseCount}`;
+
+      // Create the directory if it doesn't exist
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true }); // Create recursively
+      }
+
+      cb(null, `${dataDir}/uploads`); // Specify uploads subfolder
+    },
+    filename: (req, file, cb) => {
+      const filename = `${uuidv4()}.${file.originalname.split('.').pop()}`; 
+      cb(null, filename); 
+    }
+  });
+
+  const upload = multer({ storage: storage });
 
   app.post(endpoint, upload.array('files'), (req, res) => {
     const data = req.body;
     const ipAddress = req.ip;
+    const responseCount = (req.body.responses || {})[ipAddress] ? (req.body.responses[ipAddress].length + 1) : 1;
+    const responseDir = `data/${ipAddress}/${responseCount}`;
 
     // Handle data from form fields
     let output = '';
@@ -28,6 +51,9 @@ function startServer(port = 3000, endpoint = '/data') {
         console.log(`File uploaded: ${file.originalname}`);
       });
     }
+
+    // Save form data to data.json
+    fs.writeFileSync(`${responseDir}/data.json`, JSON.stringify(data, null, 2));
 
     // Read existing data from response.json
     let responses = {};
