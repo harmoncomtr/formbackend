@@ -11,10 +11,14 @@ This Node.js script creates a basic web server that receives data from an HTML f
 
 **How to Use:**
 
-1. **Install dependencies:**
-   ```bash
-   npm install express fs
+1. B **Install dependencies & Start Backend:**
+   ```bash"
+   npm install formbackend
    ```
+    ```nodejs
+    const formBackend = require('formbackend');
+    formBackend.startServer(8080, '/my-data');
+    ```
 
 2. **Create an HTML form:**
    ```html
