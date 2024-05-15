@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const { v4: uuidv4 } = require('uuid'); // Import uuid for random file names
+const { v4: uuidv4 } = require('uuid'); 
 
 function startServer(port = 3000, endpoint = '/data') {
   const app = express();
@@ -14,11 +14,6 @@ function startServer(port = 3000, endpoint = '/data') {
       const ipAddress = req.ip;
       const responseCount = (req.body.responses || {})[ipAddress] ? (req.body.responses[ipAddress].length + 1) : 1;
       const dataDir = `data/${ipAddress}/${responseCount}`;
-
-      // Create the directory if it doesn't exist
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true }); // Create recursively
-      }
 
       cb(null, `${dataDir}/uploads`); // Specify uploads subfolder
     },
@@ -35,6 +30,11 @@ function startServer(port = 3000, endpoint = '/data') {
     const ipAddress = req.ip;
     const responseCount = (req.body.responses || {})[ipAddress] ? (req.body.responses[ipAddress].length + 1) : 1;
     const responseDir = `data/${ipAddress}/${responseCount}`;
+
+    // Create the directory if it doesn't exist (before multer tries to use it)
+    if (!fs.existsSync(responseDir)) {
+      fs.mkdirSync(responseDir, { recursive: true }); // Create recursively
+    }
 
     // Handle data from form fields
     let output = '';
