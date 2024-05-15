@@ -82,12 +82,6 @@ function startServer(port = 3000, endpoint = '/data') {
     // Save IP to ip.txt inside the IP's folder
     fs.writeFileSync(`${ipFolder}/ip.txt`, ipAddress);
 
-    // Add new data to the correct UUID group in responses
-    if (!responses[uuid]) {
-      responses[uuid] = [];
-    }
-    responses[uuid].push(data);
-
     res.send('Data and files received and saved!');
   });
 
